@@ -1,0 +1,68 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <!-- Mejora 3: back button -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="Inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <ion-icon name="settings-outline"></ion-icon>
+      Ajustes
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Sección Apariencia -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Apariencia</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="checkmark-circle-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>Modo Oscuro</h2>
+            <p>Activa el tema oscuro de la aplicación</p>
+          </ion-label>
+          <!-- Toggle guarda al instante con Ionic Storage -->
+          <ion-toggle
+            slot="end"
+            [(ngModel)]="darkMode"
+            (ionChange)="onDarkModeChange()"
+            color="secondary">
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Sección Perfil (Mejora 1) -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="person-outline" color="secondary"></ion-icon>
+        Mi Perfil
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Tu nombre</ion-label>
+          <ion-input
+            type="text"
+            [(ngModel)]="userName"
+            placeholder="Ej: Roberto"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <ion-button expand="block" color="secondary" class="save-btn" (click)="guardarNombre()">
+        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+        Guardar nombre
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

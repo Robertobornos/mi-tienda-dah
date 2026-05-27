@@ -1,0 +1,18 @@
+ion-card {
+  margin: 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.save-btn {
+  margin-top: 16px;
+  --border-radius: 12px;
+}
