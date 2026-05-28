@@ -5,6 +5,7 @@ import {
   cartOutline, starOutline, pricetagOutline, cubeOutline,
   searchOutline, personOutline, heartOutline, bagOutline,
   trashOutline, settingsOutline, arrowBackOutline, checkmarkCircleOutline,
+  createOutline, closeOutline, swapVerticalOutline, 
 } from 'ionicons/icons';
 import { SettingsService } from './services/settings.service';
 import { provideStorage, Storage } from '@ionic/storage-angular';
@@ -19,9 +20,10 @@ export class AppComponent implements OnInit {
 
   constructor(private settingsService: SettingsService) {
     addIcons({
-      cartOutline, starOutline, pricetagOutline, cubeOutline,
-      searchOutline, personOutline, heartOutline, bagOutline,
-      trashOutline, settingsOutline, arrowBackOutline, checkmarkCircleOutline,
+       cartOutline, starOutline, pricetagOutline, cubeOutline,
+  searchOutline, personOutline, heartOutline, bagOutline,
+  trashOutline, settingsOutline, arrowBackOutline, checkmarkCircleOutline,
+  createOutline, closeOutline, swapVerticalOutline,  
     });
   }
 

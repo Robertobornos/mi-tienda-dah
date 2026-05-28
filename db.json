@@ -1,0 +1,40 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Camiseta",
+      "price": 19.99,
+      "description": "Camiseta de algodón premium, disponible en varios colores.",
+      "category": "Ropa"
+    },
+    {
+      "id": "2",
+      "name": "Pantalón",
+      "price": 29.99,
+      "description": "Pantalón vaquero de corte slim, tejido resistente.",
+      "category": "Ropa"
+    },
+    {
+      "id": "4",
+      "name": "Gorra",
+      "price": 14.99,
+      "description": "Gorra ajustable con visera curva, bordado frontal.",
+      "category": "Accesorios"
+    },
+    {
+      "id": "5",
+      "name": "Mochila",
+      "price": 39.99,
+      "description": "Mochila urbana con compartimento para portátil de 15 pulgadas.",
+      "category": "Accesorios"
+    },
+    {
+      "id": "6",
+      "name": "Chaqueta",
+      "price": 59.99,
+      "description": "Chaqueta cortavientos impermeable, forro interior polar.",
+      "category": "Ropa"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

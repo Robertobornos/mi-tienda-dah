@@ -1,38 +1,45 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Product } from '../models/product';
+import { environment } from '../../environments/environment';
+
+export interface ProductQueryParams {
+  _sort?: string;
+  _order?: 'asc' | 'desc';
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductosService {
 
-  private products: Product[] = [
-    { id: 1, name: 'Camiseta', price: 19.99, description: 'Camiseta de algodón premium, disponible en varios colores.' },
-    { id: 2, name: 'Pantalón', price: 29.99, description: 'Pantalón vaquero de corte slim, tejido resistente.' },
-    { id: 3, name: 'Zapatillas', price: 49.99, description: 'Zapatillas deportivas con suela amortiguada y transpirable.' },
-    { id: 4, name: 'Gorra', price: 14.99, description: 'Gorra ajustable con visera curva, bordado frontal.' },
-    { id: 5, name: 'Mochila', price: 39.99, description: 'Mochila urbana con compartimento para portátil de 15 pulgadas.' },
-    { id: 6, name: 'Chaqueta', price: 59.99, description: 'Chaqueta cortavientos impermeable, forro interior polar.' },
-  ];
+  private apiUrl = `${environment.apiUrl}/products`;
 
-  // Devuelve todos los productos
-  getAll(): Product[] {
-    return this.products;
+  constructor(private http: HttpClient) {}
+
+  getAll(params?: ProductQueryParams): Observable<Product[]> {
+    let httpParams = new HttpParams();
+    if (params?._sort) {
+      const prefix = params._order === 'desc' ? '-' : '';
+      httpParams = httpParams.set('_sort', `${prefix}${params._sort}`);
+    }
+    return this.http.get<Product[]>(this.apiUrl, { params: httpParams });
   }
 
-  // Devuelve un producto por ID
-  getById(id: number): Product | undefined {
-    return this.products.find(p => p.id === id);
+  getById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
-  // Añade un nuevo producto
-  add(product: Omit<Product, 'id'>): void {
-    const newId = Math.max(...this.products.map(p => p.id)) + 1;
-    this.products.push({ id: newId, ...product });
+  create(product: Omit<Product, 'id'>): Observable<Product> {
+    return this.http.post<Product>(this.apiUrl, product);
   }
 
-  // Elimina un producto por ID (Mejora 2)
-  delete(id: number): void {
-    this.products = this.products.filter(p => p.id !== id);
+  update(id: number, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

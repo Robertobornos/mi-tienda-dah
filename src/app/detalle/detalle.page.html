@@ -1,10 +1,21 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <!-- Mejora 3: back button -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" text="Volver"></ion-back-button>
     </ion-buttons>
     <ion-title>Detalle del Producto</ion-title>
+    <!-- Botón editar / guardar en toolbar -->
+    <ion-buttons slot="end" *ngIf="product">
+      <ion-button *ngIf="!modoEdicion" (click)="activarEdicion()" color="light">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="modoEdicion" (click)="guardarEdicion()" color="light">
+        <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="modoEdicion" (click)="cancelarEdicion()" color="light">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,10 +23,8 @@
 
   <div *ngIf="product; else noEncontrado">
 
-    <!-- Tarjeta principal con todos los datos -->
-    <ion-card class="detalle-card">
-
-      <!-- Cabecera visual -->
+    <!-- Modo visualización -->
+    <ion-card class="detalle-card" *ngIf="!modoEdicion">
       <div class="detalle-header">
         <div class="detalle-icon-circle">
           <ion-icon name="cube-outline"></ion-icon>
@@ -26,35 +35,24 @@
             <ion-badge color="secondary">ID: {{ product.id }}</ion-badge>
             &nbsp;
             <ion-badge color="success">Disponible</ion-badge>
+            &nbsp;
+            <ion-badge color="tertiary" *ngIf="product.category">{{ product.category }}</ion-badge>
           </ion-card-subtitle>
         </ion-card-header>
       </div>
-
       <ion-card-content>
-
-        <!-- Precio destacado -->
         <div class="precio-box">
           <span class="precio-label">Precio</span>
           <span class="precio-valor">{{ product.price | number:'1.2-2' }} €</span>
         </div>
-
-        <!-- Lista de detalles -->
         <ion-item lines="full">
           <ion-icon name="cube-outline" slot="start" color="primary"></ion-icon>
-          <ion-label>
-            <h3>Nombre</h3>
-            <p>{{ product.name }}</p>
-          </ion-label>
+          <ion-label><h3>Nombre</h3><p>{{ product.name }}</p></ion-label>
         </ion-item>
-
         <ion-item lines="full">
           <ion-icon name="pricetag-outline" slot="start" color="secondary"></ion-icon>
-          <ion-label>
-            <h3>Precio</h3>
-            <p>{{ product.price | number:'1.2-2' }} €</p>
-          </ion-label>
+          <ion-label><h3>Precio</h3><p>{{ product.price | number:'1.2-2' }} €</p></ion-label>
         </ion-item>
-
         <ion-item lines="none">
           <ion-icon name="search-outline" slot="start" color="tertiary"></ion-icon>
           <ion-label class="ion-text-wrap">
@@ -62,12 +60,58 @@
             <p>{{ product.description }}</p>
           </ion-label>
         </ion-item>
-
       </ion-card-content>
     </ion-card>
 
-    <!-- Botones de acción -->
-    <ion-grid>
+    <!-- Modo edición (PUT) -->
+    <ion-card class="detalle-card" *ngIf="modoEdicion">
+      <div class="detalle-header edicion-header">
+        <div class="detalle-icon-circle">
+          <ion-icon name="create-outline"></ion-icon>
+        </div>
+        <ion-card-header>
+          <ion-card-title class="detalle-titulo">Editando producto</ion-card-title>
+          <ion-card-subtitle>Los cambios se guardarán en el servidor</ion-card-subtitle>
+        </ion-card-header>
+      </div>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input [(ngModel)]="editNombre" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Precio (€)</ion-label>
+          <ion-input [(ngModel)]="editPrecio" type="number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-input [(ngModel)]="editDescripcion" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Categoría</ion-label>
+          <ion-input [(ngModel)]="editCategoria" type="text"></ion-input>
+        </ion-item>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-button expand="block" fill="outline" color="medium" (click)="cancelarEdicion()">
+                Cancelar
+              </ion-button>
+            </ion-col>
+            <ion-col size="6">
+              <ion-button expand="block" color="secondary" (click)="guardarEdicion()">
+                <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                Guardar
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botones acción -->
+    <ion-grid *ngIf="!modoEdicion">
       <ion-row>
         <ion-col size="6">
           <ion-button expand="block" fill="outline" color="medium" (click)="volver()">
@@ -75,7 +119,6 @@
             Volver
           </ion-button>
         </ion-col>
-        <!-- Mejora 2 + Mejora 4: botón eliminar con confirmación -->
         <ion-col size="6">
           <ion-button expand="block" color="danger" (click)="confirmarEliminar()">
             <ion-icon slot="start" name="trash-outline"></ion-icon>
@@ -87,7 +130,6 @@
 
   </div>
 
-  <!-- Template de producto no encontrado -->
   <ng-template #noEncontrado>
     <div class="no-encontrado">
       <ion-icon name="search-outline" color="medium"></ion-icon>

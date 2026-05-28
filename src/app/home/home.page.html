@@ -5,7 +5,6 @@
       Mi Tienda
     </ion-title>
     <ion-buttons slot="end">
-      <!-- Botón de Ajustes -->
       <ion-button (click)="irAjustes()">
         <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
       </ion-button>
@@ -18,12 +17,11 @@
   <!-- Banner -->
   <ion-grid>
     <ion-row class="ion-align-items-center banner-row">
-      <ion-col size="12" size-md="4" class="ion-text-center ion-justify-content-center">
+      <ion-col size="12" size-md="4" class="ion-text-center">
         <ion-avatar class="store-avatar">
           <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="Logo" />
         </ion-avatar>
         <h2 class="store-title">Mi Tienda Online</h2>
-        <!-- Mejora 1: saludo personalizado -->
         <p class="store-subtitle" *ngIf="userName">
           <ion-icon name="person-outline"></ion-icon>
           Hola, {{ userName }}
@@ -33,15 +31,14 @@
           La mejor selección de productos
         </p>
       </ion-col>
-
-      <ion-col size="12" size-md="8" class="ion-align-items-center stats-col">
+      <ion-col size="12" size-md="8" class="stats-col">
         <ion-card class="stats-card">
           <ion-card-header>
             <ion-card-title>
               <ion-icon name="cube-outline" color="primary"></ion-icon>
               Nuestro Catálogo
             </ion-card-title>
-            <ion-card-subtitle>Productos disponibles esta temporada</ion-card-subtitle>
+            <ion-card-subtitle>Conectado a JSON Server</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
             <ion-grid>
@@ -66,9 +63,24 @@
     </ion-row>
   </ion-grid>
 
-  <!-- Lista de productos clicables -->
+  <!-- MEJORA 1: Búsqueda en servidor -->
   <ion-grid>
     <ion-row>
+      <ion-col size="12" size-md="8" offset-md="2">
+        <ion-searchbar
+          [(ngModel)]="searchText"
+          (ionInput)="onSearch($event)"
+          placeholder="Buscar productos..."
+          debounce="400"
+          animated>
+        </ion-searchbar>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- MEJORA 3: Ordenación dinámica -->
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
       <ion-col size="12">
         <h3 class="section-title">
           <ion-icon name="pricetag-outline" color="primary"></ion-icon>
@@ -77,18 +89,46 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col
-        *ngFor="let p of products"
-        size="12" size-sm="6" size-md="4"
-        (click)="verDetalle(p.id)"
-        style="cursor: pointer;"
-      >
-        <app-product-item [product]="p"></app-product-item>
+      <ion-col size="12" size-md="4">
+        <ion-item>
+          <ion-label>
+            <ion-icon name="swap-vertical-outline"></ion-icon>
+            Ordenar por
+          </ion-label>
+          <ion-select
+            [(ngModel)]="selectedSort"
+            (ionChange)="onSortChange()"
+            placeholder="Sin ordenar"
+            interface="popover">
+            <ion-select-option *ngFor="let opt of sortOptions" [value]="opt.value">
+              {{ opt.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <!-- Formulario de alta -->
+  <!-- Lista de productos -->
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        *ngFor="let p of products"
+        size="12" size-sm="6" size-md="4"
+        (click)="verDetalle(p.id)"
+        style="cursor: pointer;">
+        <app-product-item [product]="p"></app-product-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="products.length === 0">
+      <ion-col class="ion-text-center" style="padding: 32px;">
+        <ion-icon name="search-outline" style="font-size: 3rem; color: var(--ion-color-medium)"></ion-icon>
+        <p style="color: var(--ion-color-medium)">No se encontraron productos</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Formulario POST -->
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="8" offset-md="2">
@@ -98,42 +138,31 @@
               <ion-icon name="cart-outline" color="secondary"></ion-icon>
               Añadir Producto
             </ion-card-title>
-            <ion-card-subtitle>Rellena el formulario para añadir un nuevo artículo</ion-card-subtitle>
+            <ion-card-subtitle>Los datos se guardan en el servidor</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
 
             <ion-item>
-              <ion-label position="floating">
-                <ion-icon name="cube-outline"></ion-icon>
-                Nombre del producto
-              </ion-label>
-              <ion-input type="text" [(ngModel)]="nuevoProductoNombre" placeholder="Ej: Camiseta básica"></ion-input>
+              <ion-label position="floating">Nombre del producto</ion-label>
+              <ion-input type="text" [(ngModel)]="nuevoNombre" placeholder="Ej: Camiseta básica"></ion-input>
             </ion-item>
 
             <ion-item>
-              <ion-label position="floating">
-                <ion-icon name="pricetag-outline"></ion-icon>
-                Precio (€)
-              </ion-label>
-              <ion-input type="number" [(ngModel)]="nuevoProductoPrecio" placeholder="Ej: 29.99"></ion-input>
+              <ion-label position="floating">Precio (€)</ion-label>
+              <ion-input type="number" [(ngModel)]="nuevoPrecio" placeholder="Ej: 29.99"></ion-input>
             </ion-item>
 
             <ion-item>
-              <ion-label>
-                <ion-icon name="search-outline"></ion-icon>
-                Categoría
-              </ion-label>
-              <ion-select [(ngModel)]="nuevoProductoCategoria" placeholder="Selecciona una categoría">
+              <ion-label position="floating">Descripción</ion-label>
+              <ion-input type="text" [(ngModel)]="nuevoDescripcion" placeholder="Descripción del producto"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Categoría</ion-label>
+              <ion-select [(ngModel)]="nuevoCategoria" placeholder="Selecciona una categoría">
                 <ion-select-option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</ion-select-option>
               </ion-select>
             </ion-item>
-
-            <div class="preview-box" *ngIf="nuevoProductoNombre">
-              <p><strong>Vista previa:</strong> {{ nuevoProductoNombre }}
-                <span *ngIf="nuevoProductoPrecio"> – {{ nuevoProductoPrecio }}€</span>
-                <span *ngIf="nuevoProductoCategoria"> [{{ nuevoProductoCategoria }}]</span>
-              </p>
-            </div>
 
             <ion-button expand="block" color="secondary" class="save-button" (click)="confirmarGuardado()">
               <ion-icon slot="start" name="cart-outline"></ion-icon>
