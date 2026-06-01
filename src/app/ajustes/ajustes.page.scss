@@ -16,3 +16,31 @@ ion-card-title {
   margin-top: 16px;
   --border-radius: 12px;
 }
+
+.foto-preview {
+  margin-bottom: 12px;
+}
+
+.foto-img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+.coords-box {
+  background: var(--ion-color-light);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+
+  p {
+    margin: 4px 0;
+    font-size: 0.9rem;
+  }
+
+  ion-button {
+    margin-top: 8px;
+  }
+}

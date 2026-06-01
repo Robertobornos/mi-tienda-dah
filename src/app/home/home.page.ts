@@ -9,6 +9,7 @@ import {
   IonButton, IonIcon, IonAvatar, IonButtons, IonSearchbar,
   ToastController, AlertController, LoadingController,
 } from '@ionic/angular/standalone';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 import { Product } from '../models/product';
 import { ProductItemComponent } from '../components/product-item/product-item.component';
@@ -167,6 +168,8 @@ export class HomePage {
     this.productosService.create(nuevoProducto).subscribe({
       next: async () => {
         loading.dismiss();
+        // Haptics: vibración al añadir producto
+        await Haptics.impact({ style: ImpactStyle.Heavy });
         const toast = await this.toastCtrl.create({
           message: `✅ "${this.nuevoNombre}" añadido correctamente.`,
           duration: 2500, color: 'success', position: 'bottom',

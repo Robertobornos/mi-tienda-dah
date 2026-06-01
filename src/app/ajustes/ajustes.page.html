@@ -1,6 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <!-- Mejora 3: back button -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" text="Inicio"></ion-back-button>
     </ion-buttons>
@@ -13,7 +12,7 @@
 
 <ion-content [fullscreen]="true">
 
-  <!-- Sección Apariencia -->
+  <!-- Apariencia -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Apariencia</ion-card-title>
@@ -24,21 +23,16 @@
           <ion-icon name="checkmark-circle-outline" slot="start" color="primary"></ion-icon>
           <ion-label>
             <h2>Modo Oscuro</h2>
-            <p>Activa el tema oscuro de la aplicación</p>
+            <p>Activa el tema oscuro</p>
           </ion-label>
-          <!-- Toggle guarda al instante con Ionic Storage -->
-          <ion-toggle
-            slot="end"
-            [(ngModel)]="darkMode"
-            (ionChange)="onDarkModeChange()"
-            color="secondary">
+          <ion-toggle slot="end" [(ngModel)]="darkMode" (ionChange)="onDarkModeChange()" color="secondary">
           </ion-toggle>
         </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
 
-  <!-- Sección Perfil (Mejora 1) -->
+  <!-- Perfil -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>
@@ -47,21 +41,78 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-label position="floating">Tu nombre</ion-label>
-          <ion-input
-            type="text"
-            [(ngModel)]="userName"
-            placeholder="Ej: Roberto"
-          ></ion-input>
-        </ion-item>
-      </ion-list>
-
+      <ion-item>
+        <ion-label position="floating">Tu nombre</ion-label>
+        <ion-input type="text" [(ngModel)]="userName" placeholder="Ej: Roberto"></ion-input>
+      </ion-item>
       <ion-button expand="block" color="secondary" class="save-btn" (click)="guardarNombre()">
         <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
         Guardar nombre
       </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- CÁMARA -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="camera-outline" color="primary"></ion-icon>
+        Cámara
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <!-- Foto tomada -->
+      <div class="foto-preview" *ngIf="fotoUrl">
+        <ion-img [src]="fotoUrl" class="foto-img"></ion-img>
+        <!-- Botón Share (Plugin Extra 2) -->
+        <ion-button expand="block" fill="outline" color="secondary" (click)="compartirFoto()">
+          <ion-icon slot="start" name="share-outline"></ion-icon>
+          Compartir foto
+        </ion-button>
+      </div>
+
+      <ion-button expand="block" color="primary" (click)="tomarFoto()">
+        <ion-icon slot="start" name="camera-outline"></ion-icon>
+        {{ fotoUrl ? 'Tomar otra foto' : 'Tomar foto' }}
+      </ion-button>
+
+    </ion-card-content>
+  </ion-card>
+
+  <!-- GPS -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="location-outline" color="danger"></ion-icon>
+        Localización GPS
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <!-- Coordenadas obtenidas -->
+      <div class="coords-box" *ngIf="coordenadas">
+        <p><strong>Latitud:</strong> {{ coordenadas.lat | number:'1.6-6' }}</p>
+        <p><strong>Longitud:</strong> {{ coordenadas.lng | number:'1.6-6' }}</p>
+        <p><strong>Precisión:</strong> {{ coordenadas.accuracy | number:'1.0-0' }} metros</p>
+
+        <ion-button expand="block" color="danger" (click)="abrirMaps()">
+          <ion-icon slot="start" name="map-outline"></ion-icon>
+          Ver en Google Maps
+        </ion-button>
+
+        <!-- Botón Share ubicación (Plugin Extra 2) -->
+        <ion-button expand="block" fill="outline" color="secondary" (click)="compartirUbicacion()">
+          <ion-icon slot="start" name="share-outline"></ion-icon>
+          Compartir ubicación
+        </ion-button>
+      </div>
+
+      <ion-button expand="block" color="primary" (click)="obtenerUbicacion()">
+        <ion-icon slot="start" name="location-outline"></ion-icon>
+        {{ coordenadas ? 'Actualizar ubicación' : 'Obtener mi ubicación' }}
+      </ion-button>
+
     </ion-card-content>
   </ion-card>
 
